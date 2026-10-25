@@ -1,6 +1,6 @@
-import type { dataErrorResponse, dataTypeResponse } from "@/auth/Types";
-import accessTokenContext from "@/contexts/accessToken";
 import apiServices from "@/services/api.services";
+import type { errorMessageResponse } from "@/types/errorMessageResponse";
+import type { MessageResponse } from "@/types/messageResponse";
 import axios, { AxiosError } from "axios";
 import React from "react";
 
@@ -8,21 +8,22 @@ type useOnFetchProps = {
   url: string;
   method: "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
   dataAxios?: any;
-  onSuccess: (data: dataTypeResponse) => void | any;
-  onError: (error: AxiosError<dataErrorResponse>) => void | any;
+  onSuccess: (data: MessageResponse) => void | any;
+  onError: (error: AxiosError<errorMessageResponse>) => void | any;
+  params?: any;
 };
 
-const useOnFetch = ({
+const useOnFetch = <D>({
   url,
   method,
   dataAxios,
   onSuccess,
   onError,
+  params,
 }: useOnFetchProps) => {
   const [isLoading, setIsLoading] = React.useState(false);
-  const [data, setData] = React.useState();
+  const [data, setData] = React.useState<D>();
   const [errorMessage, setErrorMessage] = React.useState("");
-  const tokenContext = React.useContext(accessTokenContext);
 
   async function fetchAPI() {
     setIsLoading(true);
@@ -31,9 +32,7 @@ const useOnFetch = ({
         url,
         method,
         data: dataAxios,
-        headers: {
-          Authorization: `Bearer ${tokenContext?.token}`,
-        },
+        params: params,
       });
 
       setIsLoading(false);

@@ -1,16 +1,18 @@
 import React from "react";
-import accessTokenContext from "@/contexts/accessToken";
+import currentlyUser from "@/contexts/currentUser";
+import type { User } from "@/types/currentlyUser";
+
 type ContextProviderProps = {
   children: React.ReactNode;
 };
 
 const ContextProvider = ({ children }: ContextProviderProps) => {
-  const [token, setToken] = React.useState("");
+  const [user, setUser] = React.useState<User | undefined>(undefined);
   return (
     <section>
-      <accessTokenContext.Provider value={{ token, setToken }}>
+      <currentlyUser.Provider value={{ user, setUser }}>
         {children}
-      </accessTokenContext.Provider>
+      </currentlyUser.Provider>
     </section>
   );
 };

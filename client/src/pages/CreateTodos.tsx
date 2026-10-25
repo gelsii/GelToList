@@ -10,13 +10,16 @@ import React, { type SubmitEvent } from "react";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import useOnFetch from "@/hooks/useOnFetcher";
+import useOnFetch from "@/hooks/useOnFetch";
 import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
 
 const CreateTodos = () => {
+  const navigate = useNavigate();
+
   const [formTodosData, setFormTodosData] = React.useState({
-    tile: "",
-    type: "",
+    title: "",
+    typeTodo: "",
     content: "",
   });
 
@@ -24,8 +27,13 @@ const CreateTodos = () => {
     url: "/notes",
     method: "POST",
     dataAxios: formTodosData,
-    onSuccess: (data) => toast.success(data.message),
-    onError: (error) => toast.error(error.response?.data.detail),
+    onSuccess: (data) => {
+      toast.success(data.message);
+      navigate("/todoList", { replace: true });
+    },
+    onError: (error) => {
+      toast.error(error.response?.data.detail);
+    },
   });
 
   const handleCreateNote = (e: SubmitEvent) => {
@@ -50,7 +58,7 @@ const CreateTodos = () => {
                 id="Title"
                 required
                 onChange={(e) =>
-                  setFormTodosData({ ...formTodosData, tile: e.target.value })
+                  setFormTodosData({ ...formTodosData, title: e.target.value })
                 }
               />
             </div>
@@ -63,7 +71,10 @@ const CreateTodos = () => {
                 required
                 placeholder="ex.Coding"
                 onChange={(e) =>
-                  setFormTodosData({ ...formTodosData, type: e.target.value })
+                  setFormTodosData({
+                    ...formTodosData,
+                    typeTodo: e.target.value,
+                  })
                 }
               />
             </div>

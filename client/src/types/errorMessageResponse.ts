@@ -1,0 +1,1 @@
+export type errorMessageResponse = { detail: string }

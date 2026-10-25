@@ -1,21 +1,19 @@
 import TitleComponent from "@/components/ui/TitleComponent";
-import accessTokenContext from "@/contexts/accessToken";
+import currentlyUser from "@/contexts/currentUser";
 import useFetch from "@/hooks/useFetch";
-import React from "react";
+import type { responseUser } from "@/types/currentlyUser";
+import React, { useCallback } from "react";
 import { Outlet } from "react-router";
 
 const HomeLayout = React.memo(function HomeLayout() {
-  const tokenContext = React.useContext(accessTokenContext);
+  const User = React.useContext(currentlyUser);
 
   const { isLoading } = useFetch({
     url: "/auth/token",
-    method: "GET",
-    onFetching: React.useCallback(
-      (data) => {
-        tokenContext?.setToken(data?.access_token);
-      },
-      [tokenContext],
-    ),
+    method: "POST",
+    onFetching: useCallback((data: responseUser) => {
+      User?.setUser(() => data.info_user);
+    }, []),
   });
 
   return (
