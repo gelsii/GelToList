@@ -1,4 +1,4 @@
-import React, { useEffect, type SubmitEvent } from "react";
+import React, { useCallback, type SubmitEvent } from "react";
 import {
   Card,
   CardContent,
@@ -24,13 +24,9 @@ import {
 import useOnFetch from "@/hooks/useOnFetch";
 import { toast } from "sonner";
 import type { notes } from "@/types/notes";
-import { useNavigate } from "react-router-dom";
 import {
   Sheet,
-  SheetClose,
   SheetContent,
-  SheetDescription,
-  SheetFooter,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
@@ -39,15 +35,13 @@ import { Label } from "./label";
 import { Input } from "./input";
 import { Textarea } from "./textarea";
 
-const CardDeleteModal = ({ noteID }: { noteID: string }) => {
-  const navigate = useNavigate();
-
+const CardDeleteModal = React.memo(({ noteID }: { noteID: string }) => {
   const { fetchAPI } = useOnFetch({
     url: `/notes?id=${noteID}`,
     method: "DELETE",
     onSuccess: (data) => {
       toast.success(data.message);
-      navigate("/todoList", { replace: true });
+      location.reload();
     },
     onError: (error) => toast.error(error.response?.data.detail),
   });
@@ -78,38 +72,35 @@ const CardDeleteModal = ({ noteID }: { noteID: string }) => {
       </AlertDialogContent>
     </AlertDialog>
   );
-};
+});
 
-type UpdateNoteModalProps = {
-  id: string;
-  title: string;
-  typeTodo: string;
-  content: string;
-};
-
-const UpdateNoteModal = (props: UpdateNoteModalProps) => {
-  const navigate = useNavigate();
+const UpdateNoteModal = React.memo((props: notes) => {
+  const [updatedNoteData, setUpdatedNoteData] = React.useState({
+    id: props._id,
+    title: props.title,
+    typeTodo: props.typeTodo,
+    content: props.content,
+  });
 
   const { fetchAPI, isLoading } = useOnFetch({
     url: "/notes",
     method: "PUT",
     onSuccess: (data) => {
       toast.success(data.message);
-      navigate("/", { replace: true });
+      location.reload();
     },
     onError: (error) => toast.error(error.response?.data.detail),
-    dataAxios: {
-      id: props.id,
-      title: props.title,
-      typeTodo: props.typeTodo,
-      content: props.content,
-    },
+    dataAxios: updatedNoteData,
   });
 
-  const handleSubmitUpdate = (e: SubmitEvent) => {
-    e.preventDefault();
-    fetchAPI();
-  };
+  const handleSubmitUpdate = useCallback(
+    (e: SubmitEvent) => {
+      e.preventDefault();
+      fetchAPI();
+    },
+    [fetchAPI],
+  );
+
   return (
     <Sheet>
       <SheetTrigger asChild>
@@ -126,12 +117,34 @@ const UpdateNoteModal = (props: UpdateNoteModalProps) => {
         <form className="grid gap-4 px-4" onSubmit={handleSubmitUpdate}>
           <div className="grid gap-2">
             <Label htmlFor="title">Title</Label>
-            <Input type="text" placeholder="ex.CodeToday" id="title" />
+            <Input
+              type="text"
+              placeholder="ex.CodeToday"
+              id="title"
+              defaultValue={props.title}
+              onChange={(e) =>
+                setUpdatedNoteData({
+                  ...updatedNoteData,
+                  title: e.target.value,
+                })
+              }
+            />
           </div>
 
           <div className="grid gap-2">
             <Label htmlFor="type">Type</Label>
-            <Input type="text" placeholder="ex.Code" id="Type" />
+            <Input
+              type="text"
+              placeholder="ex.Code"
+              id="Type"
+              defaultValue={props.typeTodo}
+              onChange={(e) =>
+                setUpdatedNoteData({
+                  ...updatedNoteData,
+                  typeTodo: e.target.value,
+                })
+              }
+            />
           </div>
 
           <div className="grid gap-2">
@@ -140,6 +153,13 @@ const UpdateNoteModal = (props: UpdateNoteModalProps) => {
               placeholder="content here."
               className="h-100 resize-none"
               id="content"
+              defaultValue={props.content}
+              onChange={(e) =>
+                setUpdatedNoteData({
+                  ...updatedNoteData,
+                  content: e.target.value,
+                })
+              }
             ></Textarea>
           </div>
 
@@ -150,18 +170,12 @@ const UpdateNoteModal = (props: UpdateNoteModalProps) => {
       </SheetContent>
     </Sheet>
   );
-};
+});
 
 const CardListComponent = (props: notes) => {
   const date = new Date(props.createdAt).toLocaleDateString("en-US", {
     dateStyle: "long",
   });
-
-  useEffect(() => {
-    const d = new Date(date);
-
-    console.log(d);
-  }, []);
   return (
     <Card className="w-full max-w-sm h-fit mb-6">
       <CardHeader>
@@ -173,8 +187,7 @@ const CardListComponent = (props: notes) => {
         <p>{props.content}</p>
       </CardContent>
       <CardFooter className="flex-col gap-2">
-        <UpdateNoteModal {...props} id={props._id} />
-
+        <UpdateNoteModal {...props} />
         <CardDeleteModal noteID={props._id} />
       </CardFooter>
     </Card>

@@ -6,4 +6,6 @@ export type notes = {
   createdAt: Date;
 };
 
-export type responseNotes = { notes: Array<notes> };
+export type responseNotes = { notes?: Array<notes> };
+
+export type searchResponseType = { searched_note?: notes[] }

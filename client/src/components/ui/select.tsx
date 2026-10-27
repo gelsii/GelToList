@@ -30,11 +30,11 @@ function SelectValue({
 
 function SelectTrigger({
   className,
-  size = "default",
+  size = "None",
   children,
   ...props
 }: React.ComponentProps<typeof SelectPrimitive.Trigger> & {
-  size?: "sm" | "default"
+  size?: "sm" | "default" | "None"
 }) {
   return (
     <SelectPrimitive.Trigger

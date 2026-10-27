@@ -1,3 +1,4 @@
+import AccessTokenContext from "@/contexts/userToken";
 import apiServices from "@/services/api.services";
 import axios from "axios";
 import React from "react";
@@ -16,6 +17,8 @@ const useFetch = <D>({ url, method, onFetching, dataAxios }: useFetchProps) => {
   const [isSuccess, setIsSuccess] = React.useState(false);
   const [isError, setIsError] = React.useState(false);
 
+  const token = React.useContext(AccessTokenContext);
+
   React.useEffect(() => {
     async function fetchAPI() {
       try {
@@ -23,6 +26,9 @@ const useFetch = <D>({ url, method, onFetching, dataAxios }: useFetchProps) => {
           url,
           method,
           data: dataAxios,
+          headers: {
+            Authorization: `Bearer ${token?.accessToken}`,
+          },
         });
 
         setIsLoading(false);
@@ -33,6 +39,8 @@ const useFetch = <D>({ url, method, onFetching, dataAxios }: useFetchProps) => {
       } catch (error: any) {
         if (axios.isAxiosError(error)) {
           setErrorMessage(error.response?.data.detail);
+        } else {
+          setErrorMessage("Internal Server Error");
         }
 
         setIsLoading(false);
