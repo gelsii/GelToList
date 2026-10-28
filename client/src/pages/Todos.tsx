@@ -20,7 +20,7 @@ const Todos = () => {
   return (
     <div className="w-full h-full">
       {isLoading && <h1>Loading data....</h1>}
-      <div className="w-full h-fit place-items-center columns-1 gap-4 sm:columns-2 xl:columns-4">
+      <div className="w-full h-fit place-items-center columns-1 gap-4 sm:columns-2 xl:columns-3">
         {data?.notes?.map((item, index) => (
           <CardListComponent {...item} key={index} />
         ))}

@@ -1,10 +1,3 @@
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import React, { type SubmitEvent } from "react";
 import { Label } from "@/components/ui/label";
@@ -12,10 +5,10 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import useOnFetch from "@/hooks/useOnFetch";
 import { toast } from "sonner";
-import { useNavigate } from "react-router-dom";
+//import { useNavigate } from "react-router-dom";
 
 const CreateTodos = () => {
-  const navigate = useNavigate();
+  //const navigate = useNavigate();
 
   const [formTodosData, setFormTodosData] = React.useState({
     title: "",
@@ -43,7 +36,7 @@ const CreateTodos = () => {
   };
 
   return (
-    <section className="w-full h-full flex flex-col gap-4 ">
+    <section className="w-full h-full flex flex-col gap-4 py-4 ">
       {/* <Card className="w-full max-w-md">
         <CardHeader>
           <CardTitle>Create Todos</CardTitle>
@@ -56,7 +49,7 @@ const CreateTodos = () => {
       <h1 className="text-2xl font-bold">Create a Note!</h1>
 
       <form
-        className="flex flex-col h-full justify-around w-full"
+        className="flex flex-col h-full gap-8 justify-around w-full"
         onSubmit={handleCreateNote}
       >
         <div className="grid gap-2">
