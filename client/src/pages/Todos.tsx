@@ -12,7 +12,7 @@ import { Button } from "@/components/ui/button";
 import { NotebookPen } from "lucide-react";
 
 const Todos = () => {
-  const { data, isLoading } = useFetch<responseNotes>({
+  const { data, isLoading, isError } = useFetch<responseNotes>({
     url: "/notes",
     method: "GET",
   });
@@ -44,6 +44,8 @@ const Todos = () => {
           </EmptyContent>
         </Empty>
       )}
+
+      {isError && <h1>Something went wrong. Please try again later.</h1>}
     </div>
   );
 };
