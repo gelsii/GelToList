@@ -1,0 +1,25 @@
+[project]
+name = "server"
+version = "0.1.0"
+description = "GelToList Server"
+readme = "README.md"
+authors = [
+    { name = "Gel", email = "Gel@gmail.com" }
+]
+
+requires-python = ">=3.14"
+dependencies = [
+    "bcrypt>=5.0.0",
+    "fastapi>=0.162.0",
+    "pyjwt>=2.15.1",
+    "pymongo>=4.19.0",
+    "python-dotenv>=1.2.4",
+    "uvicorn>=0.54.0",
+]
+
+[project.scripts]
+server = "server:main"
+
+[build-system]
+requires = ["uv_build>=0.12.5,<0.13.0"]
+build-backend = "uv_build"
